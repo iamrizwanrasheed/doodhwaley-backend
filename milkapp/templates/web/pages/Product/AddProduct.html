@@ -1,0 +1,30 @@
+{% extends '../../components/sidebar.html' %}
+
+
+{% block main %}
+
+    <p class="text-4xl text-primary font-bold" >Add A New Product</p>
+
+
+    <form method="POST" action='.' >
+        {% csrf_token %}
+        {{form.as_p}}
+
+        <button class="btn btn-primary my-6" type='submit' >Add Product</button>
+    </form>
+      
+
+<script>
+
+$(document).ready(function () {
+    $('select').addClass('select select-bordered w-full')
+    $('label').addClass('label')
+    $('.helptext').addClass('label-text-alt')
+})
+
+
+
+</script>
+
+{% endblock %}
+

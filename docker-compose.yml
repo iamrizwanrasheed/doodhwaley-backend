@@ -1,0 +1,124 @@
+version: "3.8"
+
+volumes:
+    doodhwaley:
+        name: doodhwaley
+    app_broker:
+        name: app_broker
+
+services:
+    nginx:
+        restart: always
+        build: ./nginx/
+        ports:
+        - "8006:80"
+        - "443:443"
+        volumes:
+        - /static:/app/static
+        - /media:/app/media
+        - ./certbot/conf:/etc/letsencrypt
+        - ./certbot/www:/var/www/certbot
+        env_file: .env
+        networks:
+        - nginx_network
+        depends_on:
+            - django
+    django: &django
+        build: .
+        command: ./start.sh server
+        depends_on:
+            - db
+            - redis
+        env_file:
+            - .env
+        ports:
+            - 8000:8000
+        volumes:
+            - .:/opt/app
+        networks:
+        - nginx_network
+
+    db:
+        image: mysql:5.7
+        restart: always
+        environment:
+            - MYSQL_DATABASE=doodhdb
+        # So you don't have to use root, but you can if you like
+            - MYSQL_USER=doodhwaley
+        # You can use whatever password you like
+            - MYSQL_PASSWORD=Ayaan2287
+        # Password for root access
+            - MYSQL_ROOT_PASSWORD=Ayaan2287
+        ports:
+        # <Port exposed> : < MySQL Port running inside container>
+        - '3302:3306'
+        expose:
+        # Opens port 3302 on the container
+        - '3306'
+        # # Where our data will be persisted
+        # volumes:
+        #     - db:/run/mysql
+        #     - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+        networks:
+        - nginx_network
+
+
+    certbot:
+        image: certbot/certbot
+        container_name: certbot
+        volumes: 
+        - ./certbot/conf:/etc/letsencrypt
+        - ./certbot/www:/var/www/certbot
+        command: certonly --webroot -w /var/www/certbot --force-renewal --email muhammadmeeran2003@gmail.com -d doodhwaley.com --agree-tos
+
+
+
+
+    redis:
+        image: redis:6.2.5-alpine
+        command: redis-server --appendonly yes
+        volumes:
+            - app_broker:/var/lib/redis/data
+        networks:
+        - nginx_network
+
+    celery:
+        <<: *django
+        depends_on:
+            - django
+            - db
+            - redis
+        ports:
+            - 8001:8000
+        command: ./start.sh worker
+        volumes:
+            - .:/project
+        networks:
+        - nginx_network
+    beat:
+        <<: *django
+        depends_on:
+            - django
+            - db
+            - redis
+        ports:
+            - 8002:8000
+        command: ./start.sh beat
+        volumes:
+            - .:/project
+        networks:
+        - nginx_network
+volumes:
+    db:
+        driver: local
+
+    app_broker:
+        driver: local
+
+    # django-static:
+    # django-media:
+    www-certs:
+        driver: local
+networks:
+  nginx_network:
+    driver: bridge

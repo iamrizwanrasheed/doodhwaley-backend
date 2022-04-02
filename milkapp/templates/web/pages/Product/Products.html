@@ -1,0 +1,148 @@
+{% extends '../../components/sidebar.html' %}
+
+
+{% block main %}
+
+    <p class="text-4xl text-primary font-bold" >Products</p>
+
+    <p class="text-lg text-base font-extralight tracking-wide p-6" >Below, you can add, delete, view products</p>
+
+    <div class="flex mb-5 w-full flex-row items-center " >
+        <div class="form-control  w-3/4">
+            <label class="label">
+            <span class="label-text">Search</span>
+            </label> 
+            <div class="relative w-2/4">
+                <input type='hidden' name="csrfmiddlewaretoken" value={{csrf_token}} />
+            <input id="search_box" type="text" placeholder="Search" class="w-full pr-16 input input-primary input-bordered"> 
+            <button onclick="searchProduct()" class="absolute top-0 right-0 rounded-l-none btn btn-primary">go</button>
+            </div>
+        </div> 
+
+        <div class="self-end" >
+            <a id="addBtn" href="/web/products/add" class="btn btn-primary btn-circle" >Add</a>
+        </div>
+    </div>
+
+    <table id='productstable' class=" table w-full">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Discount</th>
+            <th>Image</th>
+            <th>Category</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product in products_list %}
+            <tr>
+                <td>{{product.id}}</td>
+                <td>
+                    <div class="font-bold">
+                        {{ product.name }}
+                    </div> 
+                </td> 
+                <td>Rs.{{ product.price }}</td>
+                <td>{{ product.discount }}</td>
+                <td>              
+                    <div class="avatar">
+                        <div class="w-12 h-12 mask mask-squircle">
+                            <img src={{product.image.url}} alt="Avatar Tailwind CSS Component">
+                        </div>
+                    </div> 
+                </td>
+                <td>{{product.subcategory.name}}</td>
+                <td>
+                    <button class=" btn-sm btn-square btn btn-outline"><i class="fas fa-eye"></i></button> 
+                    <button data-id={{product.id}} class="deleteBtn btn-sm btn-square btn btn-outline btn-primary"><i class="fas fa-trash"></i></button> 
+                    <button class=" btn-sm btn-square btn btn-outline btn-secondary"><i class="fas fa-user-edit"></i></button> 
+                </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      
+      {% if products_list.has_other_pages %}
+        <ul class="btn-group">
+          {% if products_list.has_previous %}
+            <a role="button" class="btn" href="?{% if query %}q={{query}}&{% endif %}page={{ products_list.previous_page_number }}">&laquo;</a>
+          {% else %}
+            <a class="btn disabled"><span>&laquo;</span></a>
+          {% endif %}
+          {% for i in products_list.paginator.page_range %}
+            {% if products_list.number == i %}
+              <a role="button" class="btn btn-active"><span>{{ i }} <span class="sr-only">(current)</span></span></a>
+            {% else %}
+              <a role="button" class="btn" href="?{% if query %}q={{query}}&{% endif %}page={{ i }}">{{ i }}</a>
+            {% endif %}
+          {% endfor %}
+          {% if products_list.has_next %}
+            <a role="button" class="btn" href="?{% if query %}q={{query}}&{% endif %}page={{ products_list.next_page_number }}">&raquo;</a>
+          {% else %}
+            <a role='button' class="btn disabled"><span>&raquo;</span></a>
+          {% endif %}
+        </ul>
+      {% endif %}
+
+
+      <input type="checkbox" id="deleteModal" class="modal-toggle"> 
+      <div class="modal">
+        <div class="modal-box">
+          <p>Are You Sure You want To Delete this Customer?</p> 
+          <div class="modal-action">
+            <button id="deleteGo" for="deleteModal" class="btn btn-primary">Accept</button> 
+            <label for="deleteModal" class="btn">Close</label>
+          </div>
+        </div>
+      </div>
+      
+
+<script>
+
+function searchProduct() {
+    let query = $('#search_box').val();
+    window.location.href = "?q=" + query
+}
+
+$('.deleteBtn').click(function () {
+    let id = $(this).data("id")
+    $('#deleteGo').attr('data-id',id)
+    $('#deleteModal').click()
+})
+
+$('#deleteGo').click(function () {
+    let id = $('#deleteGo').attr("data-id")
+    $.ajax({
+        type: "POST",
+        url: `/web/customers/delete/`,
+        dataType: 'json',
+        beforeSend: function (xhr) {
+                    xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                },
+        data: {
+            'id' : id,
+        },
+        success: deleteSuccess,
+    });
+})
+
+function deleteSuccess(data, textStatus, jqXHR) {
+    console.log(data)
+    location.reload()
+}
+
+$(document).ready(function () {
+    $('select').addClass('select select-bordered w-full')
+    $('label').addClass('label')
+    $('.helptext').addClass('label-text-alt')
+})
+
+
+
+</script>
+
+{% endblock %}
+

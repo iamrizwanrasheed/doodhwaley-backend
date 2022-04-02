@@ -1,0 +1,149 @@
+1.celery -A doodhwaley beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+2.celery -A doodhwaley worker -l info
+
+
+[fcgi-program:asgi]
+# Set Django environment variables
+
+# TCP socket used by Nginx backend upstream
+socket=tcp://localhost:8000
+
+# Directory where your site's project files are located
+directory=/root/doodhwaley
+
+# Each process needs to have a separate socket file, so we use process_num
+# Make sure to update "mydjangoproject.asgi" to match your project name
+command=/root/doodhwaley/env/bin/daphne -u /run/daphne/daphne%(process_num)d.sock --fd 0 --access-log - --proxy-headers doodhwaley.asgi:application
+# Number of processes to startup, roughly the number of CPUs you have
+numprocs=3
+
+# Give each process a unique name so they can be told apart
+process_name=asgi%(process_num)d
+
+# Automatically start and recover processes
+autostart=true
+autorestart=true
+
+# Choose where you want your log to go
+stdout_logfile=/var/log/doodhwaley.log
+redirect_stderr=true
+
+
+
+[program:celeryd-worker]
+; Set full path to celery program if using virtualenv
+command=/root/doodhwaley/env/bin/celery -A doodhwaley worker -l debug
+directory=/root/doodhwaley
+user=nobody
+numprocs=1
+stdout_logfile=/var/log/celery-worker.log
+stderr_logfile=/var/log/celery-worker.log
+autostart=true
+autorestart=true
+startsecs=10
+environment=DJANGO_SETTINGS_MODULE="doodhwaley.settings"
+; Need to wait for currently executing tasks to finish at shutdown.
+; Increase this if you have very long running tasks.
+stopwaitsecs = 600
+
+; When resorting to send SIGKILL to the program to terminate it
+; send SIGKILL to its whole process group instead,
+; taking care of its children as well.
+killasgroup=true
+
+; if rabbitmq is supervised, set its priority higher
+; so it starts first
+priority=998
+
+
+[program:celeryd-beat]
+; Set full path to celery program if using virtualenv
+command=/root/doodhwaley/env/bin/celery -A doodhwaley beat -l debug --scheduler django_celery_beat.schedulers:DatabaseScheduler --pidfile /tmp/celerybeat.pid
+
+directory=/root/doodhwaley
+user=nobody
+numprocs=1
+stdout_logfile=/var/log/celery-beat.log
+stderr_logfile=/var/log/celery-beat.log
+autostart=true
+autorestart=true
+environment=DJANGO_SETTINGS_MODULE="doodhwaley.settings"
+startsecs=10
+
+; Need to wait for currently executing tasks to finish at shutdown.
+; Increase this if you have very long running tasks.
+stopwaitsecs = 600
+
+; When resorting to send SIGKILL to the program to terminate it
+; send SIGKILL to its whole process group instead,
+; taking care of its children as well.
+killasgroup=true
+
+; if rabbitmq is supervised, set its priority higher
+; so it starts first
+priority=99
+
+
+
+upstream daphne-backend {
+    server localhost:8000;
+}
+
+server {
+    server_name doodhwaley.com www.doodhwaley.com;
+    location / {
+        try_files $uri @proxy_to_app;
+    }
+
+
+    location /media/ {
+        autoindex on;
+        alias /root/doodhwaley/media/;
+    }
+
+
+    location @proxy_to_app {
+        proxy_pass http://daphne-backend;
+
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $server_name;
+    }
+
+    listen [::]:443 ssl ipv6only=on; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/doodhwaley.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/doodhwaley.com/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+
+}
+
+
+server {
+    if ($host = www.doodhwaley.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    if ($host = doodhwaley.com) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name doodhwaley.com www.doodhwaley.com;
+    return 404; # managed by Certbot
+
+
+
+
+}

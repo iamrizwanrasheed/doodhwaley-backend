@@ -1,0 +1,19 @@
+{
+  "name": "tailwind",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "tailwind build tw.css -o ../tailwind.css",
+    "build": "postcss tw.css -o ../tailwind.css"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "autoprefixer": "^10.3.4",
+    "daisyui": "^1.14.0",
+    "postcss-cli": "^8.3.1",
+    "tailwindcss": "^2.2.14"
+  }
+}

@@ -1,0 +1,45 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Django",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "runserver",
+                "8001"
+            ],
+            "django": true
+        },
+        {
+            "name": "Python: Celery Workers",
+            "type": "python",
+            "request": "launch",
+            "module": "celery",
+            "console": "integratedTerminal",
+            "envFile": "${workspaceFolder}/.env",
+            "args": ["-A", "doodhwaley", "worker", "-l", "debug"]
+        },
+        {
+            "name": "Celery Beat",
+            "type": "python",
+            "request": "launch",
+            "module": "celery",
+            "console": "integratedTerminal",
+            "envFile": "${workspaceFolder}/.env",
+            "args": [
+                "-A", 
+                "doodhwaley", 
+                "beat", 
+                "-l", 
+                "debug", 
+                "--scheduler",
+                "django_celery_beat.schedulers:DatabaseScheduler"
+            ]
+        }
+    ]
+}

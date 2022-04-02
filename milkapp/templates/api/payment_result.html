@@ -1,0 +1,36 @@
+
+<div class="container">
+    <div class="status">
+        {% if status == 'success' %}
+		<!-- --------------------------------------------------------------------------- -->
+            <h1 class="success">Your Payment has been Successful</h1>
+            <h4>Payment Information</h4>
+            <p><b>Reference Number:</b> {{payment_id}}</p>
+            <p><b>Transaction ID:</b> {{ transaction_id }} </p>
+            <p><b>Paid Amount:</b> {{amount}}</p>
+            <p><b>Payment Status:</b> Success</p>
+		<!-- --------------------------------------------------------------------------- -->
+			
+
+		<!-- --------------------------------------------------------------------------- -->
+        <!-- Payment not successful -->
+		{% elif status == 'failed' %}
+            <h1 class="error">Your Payment has been on Waiting satate</h1>
+			<p><b>Message: </b>{{responseMessage}}</p>
+		<!-- --------------------------------------------------------------------------- -->
+		
+
+		<!-- --------------------------------------------------------------------------- -->
+        <!-- Payment not successful -->
+		{% else %}
+            <h1 class="error">Your Payment has Failed</h1>
+			<p><b>Message: </b>{{responseMessage}}</p>
+        {% endif  %}
+		<!-- --------------------------------------------------------------------------- -->
+		
+		
+    </div>
+</div>
+ 
+ 
+ 

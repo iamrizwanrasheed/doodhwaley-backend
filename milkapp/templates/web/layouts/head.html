@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html data-theme="dracula" >
+    <head>
+        <title>
+            Doodhwaley Admin
+        </title>
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/tailwind.css' %}">
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@1.14.0/dist/full.css" rel="stylesheet" type="text/css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script
+            src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous">
+        </script>
+        <script src="https://kit.fontawesome.com/6ac0ac9ec2.js" crossorigin="anonymous"></script>
+
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.11.2/datatables.min.css"/>
+ 
+        <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.11.2/datatables.min.js"></script>
+    </head>
+    <body>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            
+            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>
+    
+                <div 
+                    class="alert alert-{{ message.tags }}"
+                >
+                    <div class="flex-1">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 mx-2 stroke-current">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>                          
+                      </svg> 
+                      <label>{{ message }}</label>
+                    </div>
+                </div>
+            </li>
+    
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% block content %}
+
+        {% endblock %}
+    </body>
+</html>

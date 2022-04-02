@@ -1,0 +1,112 @@
+{% extends './layouts/head.html' %}
+
+
+{% block content %}
+{% load static %}
+<div class="hero min-h-screen" style="background-image: url(https://images.unsplash.com/photo-1501139083538-0139583c060f?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&q=80);">
+    <div class="hero-overlay bg-opacity-60"></div> 
+    <div class="text-center hero-content text-neutral-content">
+      <div class="max-w-md ">
+        <div class="avatar online">
+            <div class="rounded-full w-48 h-48">
+              <img src='{% static "img/logo.png" %}'>
+            </div>
+          </div> 
+        <h1 class="my-2 text-2xl">
+              Welcome to 
+        </h1> 
+        <span class="text-5xl my-2 mb-5 font-bold" style="color : #e94e87" >Doodhwaley</span>
+        <p class="my-5">
+              Currently, We are working on something Great!. Stay Tuned to us through below links 
+        </p>
+        <div class="grid grid-flow-col gap-5 place-self-center text-center">
+            <div class="flex flex-col">
+                <span class="font-sans text-5xl countdown">
+                <span id='months'></span>
+                </span>
+                    months
+                
+            </div> 
+            <div class="flex flex-col">
+                <span class="font-sans text-5xl countdown">
+                <span id='days'></span>
+                </span>
+                    days
+                
+            </div> 
+            <div class="flex flex-col">
+                <span class="font-sans text-5xl countdown">
+                <span id='hours'></span>
+                </span>
+                    hours
+                
+            </div> 
+            <div class="flex flex-col">
+                <span class="font-sans text-5xl countdown">
+                <span id='mins'></span>
+                </span>
+                    min
+                
+            </div> 
+            <div class="flex flex-col">
+                <span class="font-sans text-5xl countdown">
+                <span id='secs'></span>
+                </span>
+                    sec
+                
+            </div>
+        </div>
+
+        <!-- Social Links -->
+        <div class="py-4 flex flex-row justify-around items-center" >
+          <a target="_blank" href="https://facebook.com/meeranmalik03" ><i class="fab fa-3x fa-facebook-square"></i></a>
+          <a target="_blank" href="https://facebook.com/meeranmalik03" ><i class="fab fa-3x fa-instagram"></i></a>
+          <a target="_blank" href="https://facebook.com/meeranmalik03" ><i class="fab fa-3x fa-google"></i></a>
+        </div>
+    </div>
+    </div>
+</div>
+
+<script>
+    $('html').attr('data-theme','valentine')
+    var countDownDate = new Date("Jan 1, 2022 15:37:25")
+
+// Update the count down every 1 second
+
+function monthDiff(dateFrom, dateTo) {
+ return dateTo.getMonth() - dateFrom.getMonth() + 
+   (12 * (dateTo.getFullYear() - dateFrom.getFullYear()))
+}
+
+var x = setInterval(function() {
+
+  // Get todays date and time
+  var now = new Date()
+
+  // Find the distance between now an the count down date
+  var distance = countDownDate.getTime() - now.getTime();
+
+  // Time calculations for days, hours, minutes and seconds
+  let months = monthDiff(now,countDownDate)-1
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24)) - (months*30);
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  // Display the result in an element with id="demo"
+  document.getElementById("months").setAttribute("style",`--value:${months}`) 
+  document.getElementById("days").setAttribute("style",`--value:${days}`) 
+  document.getElementById("hours").setAttribute("style",`--value:${hours}`)
+  document.getElementById("mins").setAttribute("style",`--value:${minutes}`)
+  document.getElementById("secs").setAttribute("style",`--value:${seconds}`)
+
+  // If the count down is finished, write some text
+  console.log('Days',days)
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("demo").innerHTML = "EXPIRED";
+  }
+}, 1000);
+</script>
+
+{% endblock %}

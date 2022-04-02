@@ -1,0 +1,153 @@
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</head>
+<style>
+    body {
+        background: #fff;
+    }
+
+    form {
+        margin: 0;
+        padding: 0;
+    }
+
+    .jsformWrapper {
+        border: 1px solid rgba(196, 21, 28, 0.50);
+        padding: 2rem;
+        width: 600px;
+        margin: 0 auto;
+        border-radius: 2px;
+        margin-top: 2rem;
+        box-shadow: 0 7px 5px #eee;
+        height: 350px;
+    }
+
+        .jsformWrapper .formFielWrapper label {
+            width: 300px;
+            float: left;
+        }
+
+        .jsformWrapper .formFielWrapper input {
+            width: 300px;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            float: left;
+            font-family: sans-serif;
+        }
+
+        .jsformWrapper .formFielWrapper {
+            float: left;
+            margin-bottom: 1rem;
+        }
+
+        .jsformWrapper button {
+            background: rgba(196, 21, 28, 1);
+            border: none;
+            color: #fff;
+            width: 120px;
+            height: 40px;
+            line-height: 25px;
+            font-size: 16px;
+            font-family: sans-serif;
+            text-transform: uppercase;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
+    h3 {
+        text-align: center;
+        margin-top: 3rem;
+        color: rgba(196, 21, 28, 1);
+    }
+    _msg{
+        background-color: yellow;
+        font-size: 14px;
+
+
+    }
+    .centered { 
+    /* margin: auto;
+    width: 50%;
+    border: 3px solid green;
+    padding: 10px; */
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+    justify-content:  center;
+    }
+</style>
+
+<script>
+    function submitForm() {
+        document.jsform.submit();
+    }
+
+    window.addEventListener('load', function() {
+        
+        setTimeout(() => {  submitForm() }, 2000);
+    })
+
+</script>
+<script src="https://sandbox.jazzcash.com.pk/Sandbox/Scripts/hmac-sha256.js"></script>
+
+<div class="centered" style="display:none;">
+<h3>JazzCash Doodhwaley Payment</h3>
+<div class="jsformWrapper ">
+    <form name="jsform" method="post" action="https://sandbox.jazzcash.com.pk/CustomerPortal/transactionmanagement/merchantform/">
+        <input type="hidden" name="pp_Version" value={{pp_Version}}>
+        <input type="hidden" name="pp_TxnType" value="">
+        <input type="hidden" name="pp_Language" value={{pp_Language}}>
+        <input type="hidden" name="pp_MerchantID" value={{pp_MerchantID}}>
+        <input type="hidden" name="pp_SubMerchantID" value="">
+        <input type="hidden" name="pp_Password" value={{pp_Password}}>
+        <input type="hidden" name="pp_BankID" value={{pp_BankID}}>
+        <input type="hidden" name="pp_ProductID" value={{pp_ProductID}}>
+
+        <div class="formFielWrapper" style="display:none;">
+            <label class="active">pp_TxnRefNo: </label>
+            <input type="text" name="pp_TxnRefNo" id="pp_TxnRefNo" value={{pp_TxnRefNo}}>
+        </div>
+
+        <div class="formFielWrapper">
+            <label class="active">Recharge Amount: </label>
+            <input type="text" name="pp_Amount" value={{pp_Amount}}>
+        </div>
+
+        <input type="hidden" name="pp_TxnCurrency" value={{pp_TxnCurrency}}>
+        <input type="hidden" name="pp_TxnDateTime" value={{pp_TxnDateTime}}>
+        <div class="formFielWrapper" style="display:none;">
+            <label class="active">pp_BillReference: </label>
+            <input type="text" name="pp_BillReference" value={{pp_BillReference}}>
+        </div>
+
+        <div class="formFielWrapper" style="display:none;">
+            <label class="active">pp_Description: </label>
+            <input type="text" name="pp_Description" value="Description of transaction">
+        </div>
+
+        <input type="hidden" name="pp_TxnExpiryDateTime" value={{pp_TxnExpiryDateTime}}>
+
+        <div class="formFielWrapper" style="display:none;">
+            <label class="active">pp_ReturnURL: </label>
+            <input type="text" name="pp_ReturnURL" value={{pp_ReturnURL}}>
+        </div>
+
+        <input type="hidden" name="pp_SecureHash" value={{hashString}}>
+        <input type="hidden" name="ppmpf_1" value={{ppmpf_1}}>
+        <input type="hidden" name="ppmpf_2" value={{ppmpf_2}}>
+        <input type="hidden" name="ppmpf_3" value={{ppmpf_3}}>
+        <input type="hidden" name="ppmpf_4" value={{ppmpf_4}}>
+        <input type="hidden" name="ppmpf_5" value={{ppmpf_5}}>
+        <button type="button" onclick="submitForm()">Submit</button>
+    </form>
+
+
+</div>
+</div>
+
+
+
+                                    
