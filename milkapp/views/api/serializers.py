@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate
 from ...utlities.push import send_notification
 from ...utlities.push_store import send_notification_store
 from ...utlities.push_delivery_boy import send_notification_delivery_boy
-from taggit_serializer.serializers import TagListSerializerField, TaggitSerializer
+from taggit.serializers import TagListSerializerField, TaggitSerializer
 from rest_framework.renderers import JSONRenderer
 from django.core import serializers as DJANGOSERIALIZER
 
