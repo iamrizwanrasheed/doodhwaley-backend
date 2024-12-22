@@ -1,26 +1,33 @@
 # Dockerfile for Django Applications
 # Section 1- Base Image
-FROM python:3.7-slim
+FROM python:3.9-slim
 # Section 2- Python Interpreter Flags
-ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
-# Section 3- Compiler and OS libraries
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends build-essential libpq-dev python3-dev default-libmysqlclient-dev python-dev \
-  && rm -rf /var/lib/apt/lists/*
-# Section 4- Project libraries and User Creation
-RUN pip install mysqlclient
-COPY requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir -r /tmp/requirements.txt \
-    && rm -rf /tmp/requirements.txt \
-    && useradd -U meeran \
-    && install -d -m 0755 -o meeran -g meeran ./app/staticfiles
-# Section 5- Code and User Setup
-ADD ./ /app
+ENV PYTHONUNBUFFERED 1
+# Section 3- Working Directory
 WORKDIR /app
-USER meeran:meeran
-COPY --chown=meeran:meeran . /app
-RUN chmod +x ./*.sh
-# Section 6- Docker Run Checks and Configurations
-ENTRYPOINT [ "./entrypoint.sh" ]
-CMD [ "./start.sh", "server" ]
+# Section 4- System Dependencies
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        build-essential \
+        default-libmysqlclient-dev \
+        libpq-dev \
+        python3-dev \
+        pkg-config \
+        gcc \
+    && rm -rf /var/lib/apt/lists/*
+# Section 5- Python Dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+# Section 6- Copy Project
+COPY . .
+# Section 7- Make Shell Scripts Executable
+RUN if [ -f "build_files.sh" ]; then chmod +x build_files.sh; fi
+RUN if [ -f "entrypoint.sh" ]; then chmod +x entrypoint.sh; fi
+RUN if [ -f "start.sh" ]; then chmod +x start.sh; fi
+# Section 8- Collect Static Files
+RUN python manage.py collectstatic --noinput
+# Section 9- Expose Port
+EXPOSE 8000
+# Section 10- Command
+CMD gunicorn doodhwaley.wsgi:application --bind 0.0.0.0:$PORT
