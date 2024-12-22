@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 import environ
+from environ import Env
+env = Env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -24,7 +26,10 @@ env = environ.Env(
 
 
 def bool_env(val):
-    return True if env(val) == "True" else False
+    try:
+        return True if env(val) == "True" else False
+    except:
+        return False if val == "DEBUG" else None
 
 
 # reading .env file
