@@ -1,2 +1,68 @@
-/env
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Logs
+*.log
+*.pot
 *.pyc
+
+# Local settings
+settings_local.py
+
+# Django stuff
+db.sqlite3
+db.sqlite3-journal
+*.sqlite3
+*.sqlite3-journal
+
+# Media & Static Files
+media/
+staticfiles/
+static/
+
+# Local virtual environments
+.env
+*.env
+venv/
+ENV/
+env/
+*.egg-info/
+pip-log.txt
+
+# Django migrations
+*/migrations/*  # Ignore migration files except __init__.py
+!*/migrations/__init__.py
+
+# Pytest / Unit test cache
+htmlcov/
+.coverage
+.tox/
+.nox/
+pytest_cache/
+.cache
+
+# VS Code
+.vscode/
+
+# macOS system files
+.DS_Store
+
+# IDEs
+.idea/
+*.iml
+
+# Pip
+pip-wheel-metadata/
+
+# Coverage reports
+.coverage
+.coverage.*
+*.cover
+*.pycover
+.hypothesis/
+
+# Security and sensitive files
+secret_key.txt
+.env.*
