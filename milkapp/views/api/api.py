@@ -217,13 +217,23 @@ class RegisterAPIView(generics.GenericAPIView):
 
 class LoginView(KnoxLoginView):
     permission_classes = (permissions.AllowAny,)
-
     def post(self, request, format=None):
-        serializer = AuthTokenSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        login(request, user)
-        return super(LoginView, self).post(request, format=None)
+        try:
+            print("RIZWAN :: Received data:", request.data)  # See incoming data
+            serializer = AuthTokenSerializer(data=request.data)
+            if not serializer.is_valid():
+                print("RIZWAN :: Validation errors:", serializer.errors)  # See validation errors
+                return Response({
+                    "error": "Invalid credentials", 
+                    "details": serializer.errors
+                }, status=400)
+            serializer.is_valid(raise_exception=True)
+            user = serializer.validated_data['user']
+            login(request, user)
+            return super(LoginView, self).post(request, format=None)
+        except Exception as e:
+            print("RIZWAN :: Error:", str(e))
+            return Response({"error": str(e)}, status=400)
 
     def get_post_response_data(self, request, token, instance):
         UserSerializer2 = UserSerializer

@@ -131,36 +131,39 @@ CHANNEL_LAYERS = {
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-if DEBUG:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR + "/" + "db.sqlite3",
-        }
-    }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.mysql",
-            "NAME": env("DATABASE_NAME"),
-            "USER": env("DATABASE_USER"),
-            "PASSWORD": env("DATABASE_PASSWORD"),
-            "HOST": env("DB_HOST"),
-            "PORT": env("DB_PORT"),
-        },
-    }
+# if DEBUG:
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.sqlite3",
+#             "NAME": BASE_DIR + "/" + "db.sqlite3",
+#         }
+#     }
+# else:
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.mysql",
+#             "NAME": env("DATABASE_NAME"),
+#             "USER": env("DATABASE_USER"),
+#             "PASSWORD": env("DATABASE_PASSWORD"),
+#             "HOST": env("DB_HOST"),
+#             "PORT": env("DB_PORT"),
+#         },
+#     }
 
 
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
 #         'NAME': 'doodhwaley',
-#         'USER': 'meeran',
-#         'PASSWORD': 'toor',
+#         'USER': 'root',
+#         'PASSWORD': '1234',
 #         'HOST': '127.0.0.1',
 #         'PORT': '3306',
 #     }
 # }
+DATABASES = {
+    'default': dj_database_url.config(default='sqlite:///db.sqlite3', conn_max_age=600, ssl_require=True)
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
